@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đơn Xin Ân Xá !!!</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        overflow: hidden;
+
+        /* Background gradient chạy mượt */
+        background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb);
+        background-size: 400% 400%;
+        animation: gradientBG 10s ease infinite;
+      }
+
+      /* Hiệu ứng chuyển động màu nền */
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* Giao diện Đơn xin ân xá ban đầu (thêm hiệu ứng kính / Glassmorphism) */
+      .card {
+        background: rgba(255, 255, 255, 0.85); /* Nền trắng hơi mờ dạng kính */
+        backdrop-filter: blur(10px); /* Làm mờ phần sau thẻ */
+        -webkit-backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); /* Bóng đổ xịn xò hơn */
+        border: 1px solid rgba(255, 255, 255, 0.5); /* Viền kính 3D mỏng */
+        max-width: 400px;
+        z-index: 10;
+      }
+      h1 {
+        color: #ff4d4d;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+      p {
+        color: #555;
+        line-height: 1.6;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      .highlight {
+        color: #e60000;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .buttons {
+        position: relative;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      button {
+        padding: 12px 10px;
+        width: 48%; /* Bắt buộc hai nút chia đều kích thước ngang bằng nhau */
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      #btn-yes {
+        background-color: #ff4d4d;
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 77, 77, 0.4);
+        z-index: 2;
+      }
+      #btn-yes:hover {
+        transform: scale(1.1);
+      }
+
+      #btn-no {
+        background-color: #ccc;
+        color: #333;
+        z-index: 9999; /* Đẩy nút này nổi lên trên cùng, chèn lên cả bức thư */
+      }
+
+      /* Giao diện Album ảnh hiện ra sau khi tha lỗi */
+      #success-msg {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #ffe6e6;
+        z-index: 5;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 1s ease;
+      }
+
+      .success-text {
+        font-size: 24px;
+        color: #e60000;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Khung ảnh Polaroid */
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px 15vw; /* Dùng khoảng cách siêu lớn theo chiều ngang để đẩy các ảnh dạt ra 2 phía (4 góc) */
+        max-width: 1000px; /* Nới rộng giới hạn bao quanh */
+        margin: 10px auto;
+      }
+
+      .polaroid {
+        background: white;
+        padding: 15px 15px 30px 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        width: 220px;
+        transition: 0.3s;
+        animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+      }
+
+      .polaroid:nth-child(1) {
+        transform: rotate(-5deg);
+      }
+      .polaroid:nth-child(2) {
+        transform: rotate(7deg);
+        animation-delay: 0.2s;
+      }
+      .polaroid:nth-child(3) {
+        transform: rotate(-3deg);
+        animation-delay: 0.4s;
+      }
+      .polaroid:nth-child(4) {
+        transform: rotate(5deg);
+        animation-delay: 0.6s;
+      }
+      .polaroid:nth-child(5) {
+        transform: rotate(-7deg);
+        animation-delay: 0.8s;
+      }
+
+      .polaroid:hover {
+        transform: scale(1.1) rotate(0deg) !important;
+        z-index: 10;
+      }
+
+      .polaroid img,
+      .polaroid video {
+        width: 100%;
+        height: 220px;
+        object-fit: cover; /* Cắt ảnh/video vuông vắn */
+        background-color: #f0f0f0;
+        border-radius: 3px;
+      }
+
+      /* Thiết kế riêng cho Video ở chính giữa rực rỡ hơn */
+      .polaroid.featured {
+        width: 300px;
+        transform: rotate(0deg) !important; /* Đứng thẳng không nghiêng */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        z-index: 5;
+      }
+      .polaroid.featured video {
+        height: 300px; /* Khung hiển thị video to hơn */
+      }
+
+      .caption {
+        text-align: center;
+        color: #444;
+        font-size: 16px;
+        margin-top: 15px;
+        font-weight: bold;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: scale(0) translateY(50px);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(var(--rot));
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Pháo giấy rớt */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        animation: fall 3s infinite linear;
+        z-index: 20;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Màn hình 1: Giao diện dỗ dành -->
+    <div class="card" id="main-card">
+      <h1>📜 ĐƠN XIN ÂN XÁ</h1>
+      <p><b>Kính gửi:</b> Em bé xih gái nhất quả đất 🌍</p>
+      <p><b>Tội danh:</b> Tặng quà 8/3 muộn.</p>
+      <p>
+        <b>Lý do:</b> Do anh bị ngốc, mải ngắm ảnh em mà quên mất ngày tháng
+        (Anh chừa rồi, anh xin lỗi mờ 🥺).
+      </p>
+      <p class="highlight">
+        Bấm tha lỗi cho anh đi, anh dẫn đi ăn ngon và đền quà nhaaa! ❤️
+      </p>
+
+      <div class="buttons">
+        <button id="btn-yes" onclick="forgiveMe()">Tha lỗi cho anh! 😘</button>
+        <button id="btn-no" onmouseover="runAway()" onclick="runAway()">
+          Không! Dỗi tiếp 😤
+        </button>
+      </div>
+    </div>
+
+    <!-- Màn hình 2: Hiện ra sau khi tha lỗi -->
+    <div id="success-msg">
+      <div class="success-text">
+        Yayyy! Biết ngay là cục cưng thương anh nhất mà! 😍<br />
+        Ngắm lại sự xinh đẹp này rồi hết dỗi đi nha!
+      </div>
+
+      <div class="gallery">
+        <!-- ẢNH 1 -->
+        <div class="polaroid">
+          <img src="anh1.jpg" alt="Ảnh 1" />
+          <div class="caption">Xinh thế này mà dỗi à? 😝</div>
+        </div>
+
+        <!-- ẢNH 2 -->
+        <div class="polaroid">
+          <img src="anh2.jpg" alt="Ảnh 2" />
+          <div class="caption">Cười lên là đẹp nhất nè ❤️</div>
+        </div>
+
+        <!-- Chèn khoảng trống bắt buộc xuống dòng để trét video vào giữa -->
+        <div style="flex-basis: 100%; height: 0"></div>
+
+        <!-- VIDEO Ở TRUNG TÂM -->
+        <div class="polaroid featured">
+          <video
+            src="video1.mp4"
+            autoplay
+            loop
+            muted
+            playsinline
+            controls
+          ></video>
+          <div class="caption">Kỷ niệm rung rinh 🎬</div>
+        </div>
+
+        <!-- Chèn khoảng cách bắt buộc xuống dòng tiếp theo -->
+        <div style="flex-basis: 100%; height: 0"></div>
+
+        <!-- ẢNH 3 -->
+        <div class="polaroid">
+          <img src="anh3.jpg" alt="Ảnh 3" />
+          <div class="caption">Yêu em bé nhấttttt! 🥰</div>
+        </div>
+
+        <!-- ẢNH 4 -->
+        <div class="polaroid">
+          <img src="anh4.jpg" alt="Ảnh 4" />
+          <div class="caption">Đáng iu chưa nè 😘</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Hàm làm nút "Không" chạy trốn
+      function runAway() {
+        var btnNo = document.getElementById("btn-no");
+
+        // Giải thoát nút ra khỏi thẻ .card để nó không bị lỗi toạ độ do hiệu ứng kính (backdrop-filter)
+        if (btnNo.parentElement !== document.body) {
+          // Ghim cứng chiều rộng bằng px tĩnh để nút không bị phình to ra 48% của toàn bộ màn hình
+          btnNo.style.width = btnNo.offsetWidth + "px";
+          document.body.appendChild(btnNo);
+        }
+
+        // Tính toán giới hạn chạy trốn của nút trong phạm vi an toàn
+        // Lấy width/height của màn hình trừ đi kích thước nút và 20px lề phụ
+        var maxX = window.innerWidth - btnNo.clientWidth - 20;
+        var maxY = window.innerHeight - btnNo.clientHeight - 20;
+
+        // Giới hạn max(20, ...) để luôn cách mép trái và mép trên ít nhất 20px
+        var randomX = Math.max(20, Math.floor(Math.random() * maxX));
+        var randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+        // Đổi position sang fixed để bay tự do khắp màn hình
+        btnNo.style.position = "fixed";
+        btnNo.style.left = randomX + "px";
+        btnNo.style.top = randomY + "px";
+        btnNo.style.right = "auto";
+      }
+
+      // Hàm khi bấm "Tha lỗi"
+      function forgiveMe() {
+        document.getElementById("main-card").style.display = "none"; // Ẩn đơn xin lỗi
+        document.getElementById("btn-no").style.display = "none"; // Bắt chết nút "Không" phải biến mất dù nó đã chạy trốn ra thẻ body
+        document.getElementById("success-msg").style.display = "flex"; // Hiện thư viện ảnh
+        createConfetti(); // Bắn pháo giấy
+      }
+
+      // Tạo pháo giấy rơi xuống
+      function createConfetti() {
+        const colors = ["#ff4d4d", "#ff9999", "#ffcc00", "#66ccff", "#99ff99"];
+        for (let i = 0; i < 100; i++) {
+          let confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = Math.random() * 2 + 3 + "s";
+          confetti.style.animationDelay = Math.random() * 2 + "s";
+          document.body.appendChild(confetti);
+        }
+      }
+    </script>
+  </body>
+</html>
